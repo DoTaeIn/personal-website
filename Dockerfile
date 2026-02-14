@@ -5,7 +5,7 @@ COPY package.json package-lock.json ./
 RUN npm ci
 
 # 2. 빌드 단계
-FROM node:20-iron AS builder
+FROM node:20-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
