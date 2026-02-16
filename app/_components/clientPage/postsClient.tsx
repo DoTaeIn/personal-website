@@ -57,9 +57,8 @@ export default function Posts({ posts = [], user: initialUser }: PostsProps) {
 
     // 카테고리 추출
     const categories = useMemo(() => {
-        // category가 없는 포스트를 위해 기본값 처리
-        const cats = ["All", ...new Set(posts.map(p => p.category || "General"))];
-        return cats;
+        const cats = Array.from(new Set(posts.map(p => p.category)));
+        return ["All", ...cats.filter(Boolean)];
     }, [posts]);
 
     // 필터링
@@ -116,45 +115,6 @@ export default function Posts({ posts = [], user: initialUser }: PostsProps) {
         <div className="min-h-screen bg-slate-950 text-slate-200 selection:bg-cyan-500/30 font-sans">
 
             {/* --- 네비게이션 바 --- */}
-            <nav className={`fixed top-0 w-full z-50 transition-all duration-300 border-b ${isScrolled ? 'bg-slate-950/80 backdrop-blur-md border-slate-800 py-4' : 'bg-transparent border-transparent py-6'}`}>
-                <div className="max-w-5xl mx-auto px-6 flex justify-between items-center">
-                    <Link href="/" className="font-bold text-xl tracking-tighter text-cyan-400 flex items-center gap-2">
-                        <Terminal size={20} />
-                        Jin.Dev
-                    </Link>
-                    <div className="flex items-center gap-6">
-                        <div className="hidden md:flex gap-8 text-sm font-medium text-slate-400">
-                            <Link href="/" className="hover:text-cyan-400 transition-colors">홈</Link>
-                            <Link href="/posts" className="text-cyan-400 transition-colors border-b border-cyan-400/50">블로그</Link>
-                            <Link href="/projects" className="hover:text-cyan-400 transition-colors">프로젝트</Link>
-                        </div>
-                        <div className="h-4 w-px bg-slate-800 mx-2 hidden md:block"></div>
-
-                        {user ? (
-                            <div className="flex items-center gap-4">
-                                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-slate-300">
-                                    <div className="w-6 h-6 rounded-full bg-cyan-500 flex items-center justify-center text-white text-[10px] font-bold">
-                                        {user.user_metadata?.full_name?.charAt(0) || user.email?.charAt(0).toUpperCase()}
-                                    </div>
-                                    <span className="text-xs font-medium">
-                                        {user.user_metadata?.full_name || user.email?.split('@')[0]} 님
-                                    </span>
-                                </div>
-                                <button onClick={handleLogout} className="p-2 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-400/10 transition-all">
-                                    <LogOut size={18} />
-                                </button>
-                            </div>
-                        ) : (
-                            <Link
-                                href="/login" // 로그인 페이지가 있다면
-                                className="text-sm font-semibold px-4 py-2 rounded-lg bg-slate-900 border border-slate-800 hover:border-cyan-500/50 text-slate-300 hover:text-cyan-400 transition-all"
-                            >
-                                로그인
-                            </Link>
-                        )}
-                    </div>
-                </div>
-            </nav>
 
             {/* --- Blog Header Section --- */}
             <section className="pt-32 pb-12 px-6">
@@ -179,7 +139,7 @@ export default function Posts({ posts = [], user: initialUser }: PostsProps) {
                         </div>
                         {user && (
                             <Link
-                                href="/write" // 글쓰기 페이지 경로
+                                href="/posts/new" // 글쓰기 페이지 경로
                                 className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold transition-all shadow-lg shadow-cyan-900/20"
                             >
                                 <PenTool size={18} />
@@ -219,6 +179,7 @@ export default function Posts({ posts = [], user: initialUser }: PostsProps) {
                             {categories.map((cat) => (
                                 <button
                                     key={cat}
+                                    //@ts-expect-error NOTE: Yeah that is string no shit
                                     onClick={() => setSelectedCategory(cat)}
                                     className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all border ${
                                         selectedCategory === cat
@@ -327,8 +288,8 @@ export default function Posts({ posts = [], user: initialUser }: PostsProps) {
             <footer id="contact" className="py-20 px-6 border-t border-slate-800 mt-10">
                 <div className="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
                     <div className="text-center md:text-left">
-                        <h2 className="text-2xl font-bold text-white mb-2">Let's Connect</h2>
-                        <p className="text-slate-400 mb-6">새로운 기회와 협업은 언제나 환영합니다.</p>
+                        <h2 className="text-2xl font-bold text-white mb-2">Let&#39;s Connect</h2>
+                        <p className="text-slate-400 mb-6">새로운 기회는 언제나 환영합니다.</p>
                         <div className="flex gap-4 justify-center md:justify-start">
                             <a href="#" className="p-2 bg-slate-800 rounded-full hover:bg-slate-700 hover:text-cyan-400 transition-all text-slate-300">
                                 <Github size={20} />

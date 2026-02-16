@@ -18,12 +18,7 @@ export const techConfig: Record<string, { icon: any, color: string, bg: string }
         color: "text-gray-800 dark:text-white",
         bg: "bg-gray-500/10 border-gray-500/20"
     },
-    "AWS Lambda": {
-        icon: Cloud,
-        color: "text-orange-500",
-        bg: "bg-orange-500/10 border-orange-500/20"
-    },
-    "OpenAI": {
+    "Pytorch": {
         icon: Bot,
         color: "text-green-600",
         bg: "bg-green-500/10 border-green-500/20"
@@ -33,7 +28,6 @@ export const techConfig: Record<string, { icon: any, color: string, bg: string }
         color: "text-gray-600",
         bg: "bg-gray-500/10 border-gray-500/20"
     },
-    // 기본값 (매칭되는 태그가 없을 때 사용)
     "Default": {
         icon: Code,
         color: "text-slate-500",

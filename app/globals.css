@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 :root {
   --background: #ffffff;
@@ -20,7 +21,128 @@
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #020617; /* slate-950 */
+  color: #e2e8f0; /* slate-200 */
+}
+
+/* 1. 에디터(.ProseMirror) 및 미리보기(.tiptap-preview) 공통 스타일 */
+.ProseMirror, .tiptap-preview {
+  outline: none !important;
+  min-height: 500px;
+}
+
+/* 제목 (H1 ~ H3) */
+.ProseMirror h1, .tiptap-preview h1 {
+  font-size: 2.25rem !important; /* text-4xl */
+  font-weight: 800 !important;
+  color: #22d3ee !important; /* cyan-400 */
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  line-height: 1.1;
+}
+
+.ProseMirror h2, .tiptap-preview h2 {
+  font-size: 1.875rem !important; /* text-3xl */
+  font-weight: 700 !important;
+  color: #a5f3fc !important; /* cyan-200 */
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid #1e293b;
+  padding-bottom: 0.5rem;
+}
+
+.ProseMirror h3, .tiptap-preview h3 {
+  font-size: 1.5rem !important; /* text-2xl */
+  font-weight: 600 !important;
+  color: #cffafe !important; /* cyan-100 */
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* 본문 (P) */
+.ProseMirror p, .tiptap-preview p {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.8;
+  font-size: 1.125rem; /* text-lg */
+  color: #cbd5e1; /* slate-300 */
+}
+
+/* 리스트 (UL, OL) */
+.ProseMirror ul, .tiptap-preview ul {
+  list-style-type: disc !important;
+  padding-left: 1.5rem !important;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.ProseMirror ol, .tiptap-preview ol {
+  list-style-type: decimal !important;
+  padding-left: 1.5rem !important;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.ProseMirror li, .tiptap-preview li {
+  margin-bottom: 0.5rem;
+}
+
+.ProseMirror li::marker, .tiptap-preview li::marker {
+  color: #22d3ee !important;
+}
+
+/* 인용구 (Blockquote) */
+.ProseMirror blockquote, .tiptap-preview blockquote {
+  border-left: 4px solid #06b6d4 !important;
+  background: rgba(15, 23, 42, 0.5);
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  border-radius: 0 0.5rem 0.5rem 0;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+/* 코드 블럭 (Pre) */
+.ProseMirror pre, .tiptap-preview pre {
+  background: #0d1117 !important;
+  color: #e6edf3;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #30363d;
+  margin: 1.5rem 0;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.ProseMirror pre code, .tiptap-preview pre code {
+  background: transparent !important;
+  padding: 0;
+  color: inherit;
+  font-size: 0.9em;
+}
+
+/* 인라인 코드 (Code) */
+.ProseMirror code, .tiptap-preview code {
+  background-color: rgba(30, 41, 59, 0.8);
+  color: #22d3ee;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  font-family: monospace;
+  font-size: 0.9em;
+}
+
+/* 링크 (A) */
+.ProseMirror a, .tiptap-preview a {
+  color: #22d3ee !important;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* 에디터 Placeholder */
+.ProseMirror p.is-editor-empty:first-child::before {
+  color: #64748b;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
 }

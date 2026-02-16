@@ -1,5 +1,5 @@
 import {createClient} from "@/app/_utils/supabase/server";
-import Projects from "@/app/_components/projectsClient";
+import Projects from "@/app/_components/clientPage/projectsClient";
 
 export default async function Home() {
     // 1. 서버에서 미리 데이터 땡겨오기 (엄청 빠름)

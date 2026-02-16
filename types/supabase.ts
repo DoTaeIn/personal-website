@@ -34,69 +34,131 @@ export type Database = {
   }
   public: {
     Tables: {
-      posts: {
+      categories: {
         Row: {
-          category: string | null
-          content: string | null
-          created_at: string
-          desc: string | null
-          edited_at: string | null
-          id: number
-          title: string | null
-          user_id: string | null
+          created_at: string | null
+          id: string
+          name: string
+          slug: string
         }
         Insert: {
-          category?: string | null
-          content?: string | null
-          created_at?: string
-          desc?: string | null
-          edited_at?: string | null
-          id?: number
-          title?: string | null
-          user_id?: string | null
+          created_at?: string | null
+          id?: string
+          name: string
+          slug: string
         }
         Update: {
-          category?: string | null
-          content?: string | null
-          created_at?: string
-          desc?: string | null
-          edited_at?: string | null
-          id?: number
-          title?: string | null
-          user_id?: string | null
+          created_at?: string | null
+          id?: string
+          name?: string
+          slug?: string
         }
         Relationships: []
       }
-      projects: {
+      posts: {
         Row: {
-          created_at: string
-          desc: string | null
-          edited_at: string | null
-          ended_at: string | null
-          id: number
-          links: Json | null
-          tag: string[] | null
-          title: string | null
+          category_id: string | null
+          content: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          is_published: boolean | null
+          slug: string
+          tags: string[] | null
+          thumbnail_url: string | null
+          title: string
+          updated_at: string | null
+          view_count: number | null
         }
         Insert: {
-          created_at?: string
-          desc?: string | null
-          edited_at?: string | null
-          ended_at?: string | null
-          id?: number
-          links?: Json | null
-          tag?: string[] | null
-          title?: string | null
+          category_id?: string | null
+          content?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_published?: boolean | null
+          slug: string
+          tags?: string[] | null
+          thumbnail_url?: string | null
+          title: string
+          updated_at?: string | null
+          view_count?: number | null
         }
         Update: {
-          created_at?: string
-          desc?: string | null
-          edited_at?: string | null
-          ended_at?: string | null
-          id?: number
-          links?: Json | null
-          tag?: string[] | null
-          title?: string | null
+          category_id?: string | null
+          content?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_published?: boolean | null
+          slug?: string
+          tags?: string[] | null
+          thumbnail_url?: string | null
+          title?: string
+          updated_at?: string | null
+          view_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "posts_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      projects: {
+        Row: {
+          content: string | null
+          created_at: string | null
+          demo_url: string | null
+          description: string | null
+          end_date: string | null
+          github_url: string | null
+          id: string
+          is_featured: boolean | null
+          slug: string
+          start_date: string | null
+          tech_stack: string[] | null
+          thumbnail_url: string | null
+          title: string
+          type: Database["public"]["Enums"]["project_type"]
+          updated_at: string | null
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string | null
+          demo_url?: string | null
+          description?: string | null
+          end_date?: string | null
+          github_url?: string | null
+          id?: string
+          is_featured?: boolean | null
+          slug: string
+          start_date?: string | null
+          tech_stack?: string[] | null
+          thumbnail_url?: string | null
+          title: string
+          type?: Database["public"]["Enums"]["project_type"]
+          updated_at?: string | null
+        }
+        Update: {
+          content?: string | null
+          created_at?: string | null
+          demo_url?: string | null
+          description?: string | null
+          end_date?: string | null
+          github_url?: string | null
+          id?: string
+          is_featured?: boolean | null
+          slug?: string
+          start_date?: string | null
+          tech_stack?: string[] | null
+          thumbnail_url?: string | null
+          title?: string
+          type?: Database["public"]["Enums"]["project_type"]
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -108,7 +170,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      project_type: "web" | "mobile" | "ai" | "infra" | "game" | "other"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -238,7 +300,9 @@ export const Constants = {
     Enums: {},
   },
   public: {
-    Enums: {},
+    Enums: {
+      project_type: ["web", "mobile", "ai", "infra", "game", "other"],
+    },
   },
 } as const
 
