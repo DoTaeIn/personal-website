@@ -1,3 +1,4 @@
+// middleware.ts (또는 해당 로직이 포함된 utils 파일)
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
@@ -29,45 +30,56 @@ export async function updateSession(request: NextRequest) {
         }
     )
 
-    // 유저 정보 가져오기 & 토큰 갱신
-    const {
-        data: { user },
-    } = await supabase.auth.getUser()
+    // 1. 유저 정보 가져오기 (세션 갱신 트리거)
+    const { data: { user } } = await supabase.auth.getUser()
 
-
-    // --- 경로 보호 로직 ---
     const path = request.nextUrl.pathname;
 
-    // 1. [수정됨] 로그인한 유저가 못 들어가는 페이지 (Auth 관련)
-    // 폴더명이 'register'라면 여기서도 'register'로 맞춰야 합니다.
+    // --- 2. 경로 그룹 정의 ---
     const authPaths = ['/account/login', '/account/register', '/account/reset-password'];
+    const adminPaths = ['/admin', '/write'];
+    const userPaths = ['/dashboard', '/settings', '/account/profile'];
+
     const isAuthRoute = authPaths.some(ap => path.startsWith(ap));
+    const isAdminRoute = adminPaths.some(ap => path.startsWith(ap));
+    const isUserRoute = userPaths.some(up => path.startsWith(up));
 
-    // 2. [수정됨] 로그인 안 한 유저가 못 들어가는 페이지 (보호된 페이지)
-    // ⚠️ 중요: '/account' 전체를 넣으면 로그인 페이지도 막히므로 뺐습니다.
-    // 만약 '/account/profile' 같은 개인 페이지가 있다면 그것만 따로 명시하세요.
-    const protectedPaths = [
-        '/dashboard',
-        '/posts/new',
-        '/settings',
-        // '/account/profile' // (예시) account 내부에 보호해야 할 페이지가 있다면 이렇게 구체적으로 적으세요.
-    ];
-    const isProtectedRoute = protectedPaths.some(pp => path.startsWith(pp));
+    // --- 3. 리다이렉트 로직 ---
 
-
-    // Case 1: 비로그인 상태로 보호된 페이지 접근 -> 로그인 페이지로 이동
-    if (!user && isProtectedRoute) {
+    // Case 1: 비로그인 상태로 보호된 페이지(Admin 또는 User) 접근 시
+    if (!user && (isAdminRoute || isUserRoute)) {
         const url = request.nextUrl.clone()
-        url.pathname = '/account/login' // 경로 수정됨
-        // url.searchParams.set('next', path) // 로그인 후 되돌아오기 기능 필요시 주석 해제
+        url.pathname = '/account/login'
         return NextResponse.redirect(url)
     }
 
-    // Case 2: 로그인 상태로 Auth 페이지 접근 -> 메인으로 이동
-    if (user && isAuthRoute) {
-        const url = request.nextUrl.clone()
-        url.pathname = '/'
-        return NextResponse.redirect(url)
+    // Case 2: 로그인 상태일 때 추가 권한 체크
+    if (user) {
+        // 이미 로그인했는데 로그인/회원가입 페이지 가려고 하면 메인으로
+        if (isAuthRoute) {
+            return NextResponse.redirect(new URL('/', request.url))
+        }
+
+        // 🔥 [핵심] 관리자/글쓰기 경로 접근 시 DB에서 role 확인
+        if (isAdminRoute) {
+            const { data: profile } = await supabase
+                .from('profiles')
+                .select('role')
+                .eq('id', user.id)
+                .single()
+
+            const role = profile?.role;
+
+            // 관리자가 아닌데 관리자 페이지 접속 시 403 또는 메인으로 리다이렉트
+            if (role !== 'admin') {
+                // 글쓰기(/write)의 경우 editor 권한까지 허용하려면 조건을 추가하세요
+                if (path.startsWith('/write') && (role === 'admin' || role === 'editor')) {
+                    return response; // 통과
+                }
+
+                return NextResponse.redirect(new URL('/', request.url))
+            }
+        }
     }
 
     return response
