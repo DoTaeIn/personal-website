@@ -58,8 +58,25 @@ export default function LoginPage() {
             setUser(user);
             router.push('/');
 
-        } catch {
-            setError("Internal Server Error");
+        } catch (error: any) {
+            // Supabase auth 실패 케이스(계정 없음/비밀번호 틀림 등)는 대개 같은 메시지로 내려옵니다.
+            const message = String(error?.message ?? "");
+            const lower = message.toLowerCase();
+
+            if (
+                lower.includes("invalid login credentials") ||
+                lower.includes("invalid password") ||
+                (lower.includes("credentials") && lower.includes("invalid")) ||
+                (lower.includes("user") && lower.includes("not found"))
+            ) {
+                setError("이메일 또는 비밀번호가 올바르지 않습니다.");
+            } else if (lower.includes("email not confirmed") || lower.includes("not confirmed")) {
+                setError("이메일 인증이 필요합니다. 이메일을 확인해주세요.");
+            } else if (lower.includes("rate limit") || lower.includes("too many attempts")) {
+                setError("요청이 너무 많습니다. 잠시 후 다시 시도해주세요.");
+            } else {
+                setError("로그인에 실패했습니다. 잠시 후 다시 시도해주세요.");
+            }
 
         } finally {
             setIsLoading(false);
