@@ -12,7 +12,7 @@ import { User } from '@supabase/supabase-js'
 import { FadeIn } from '@/app/_components/FadeIn'
 
 interface Post {
-    id: number
+    id: string
     title: string
     content?: string
     category?: string
