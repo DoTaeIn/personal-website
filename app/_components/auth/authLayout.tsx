@@ -1,65 +1,83 @@
-// app/components/auth/AuthLayout.tsx
-import React from 'react';
-import { AlertCircle, ArrowLeft, Terminal, X } from "lucide-react";
+import React from 'react'
+import { AlertCircle, ArrowLeft, Terminal, X } from 'lucide-react'
 
 interface AuthLayoutProps {
-    children: React.ReactNode;
-    title: string;
-    subtitle: string;
-    onBack?: () => void; // 필수값이 아닐 수도 있으므로 ? 처리
-    error?: string;
-    clearError?: () => void;
+    children: React.ReactNode
+    title: string
+    subtitle: string
+    onBack?: () => void
+    error?: string
+    clearError?: () => void
 }
 
 export const AuthLayout = ({
-   children,
-   title,
-   subtitle,
-   onBack,
-   error,
-   clearError
+    children,
+    title,
+    subtitle,
+    onBack,
+    error,
+    clearError,
 }: AuthLayoutProps) => {
     return (
-        <div className="min-h-screen bg-slate-950 flex flex-col justify-center items-center px-6 py-12">
+        <div
+            className="min-h-screen flex flex-col justify-center items-center px-6 py-12"
+            style={{ background: 'var(--bg)' }}
+        >
             {onBack && (
                 <button
                     onClick={onBack}
-                    className="absolute top-8 left-8 flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors"
+                    className="absolute top-8 left-8 flex items-center gap-2 text-sm transition-colors"
+                    style={{ color: 'var(--text-muted)' }}
+                    onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
+                    onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
                 >
-                    <ArrowLeft size={20} />
-                    <span>메인으로 돌아가기</span>
+                    <ArrowLeft size={18} />
+                    메인으로 돌아가기
                 </button>
             )}
 
             <div className="w-full max-w-md">
-                {/* Error Alert Box */}
                 {error && (
                     <div className="mb-6 animate-in fade-in slide-in-from-top-4 duration-300">
-                        <div className="bg-red-500/10 border border-red-500/50 rounded-2xl p-4 flex items-start gap-3 text-red-400">
-                            <AlertCircle className="shrink-0 mt-0.5" size={18} />
-                            <div className="flex-1 text-sm font-medium">
-                                {error}
-                            </div>
+                        <div className="bg-red-500/10 border border-red-500/40 rounded-2xl p-4 flex items-start gap-3 text-red-500">
+                            <AlertCircle className="shrink-0 mt-0.5" size={16} />
+                            <div className="flex-1 text-sm font-medium">{error}</div>
                             {clearError && (
-                                <button onClick={clearError} className="hover:text-red-200 transition-colors">
-                                    <X size={18} />
+                                <button onClick={clearError} className="hover:text-red-300 transition-colors">
+                                    <X size={16} />
                                 </button>
                             )}
                         </div>
                     </div>
                 )}
+
                 <div className="text-center mb-10">
-                    <div className="inline-flex p-3 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 mb-4">
-                        <Terminal size={32} />
+                    <div
+                        className="inline-flex p-3 rounded-2xl border mb-5"
+                        style={{
+                            background: 'var(--accent-light)',
+                            borderColor: 'var(--accent)',
+                            color: 'var(--accent)',
+                        }}
+                    >
+                        <Terminal size={28} />
                     </div>
-                    <h1 className="text-3xl font-bold text-white mb-2">{title}</h1>
-                    <p className="text-slate-400">{subtitle}</p>
+                    <h1 className="text-3xl font-bold mb-2" style={{ color: 'var(--text)' }}>
+                        {title}
+                    </h1>
+                    <p style={{ color: 'var(--text-muted)' }}>{subtitle}</p>
                 </div>
 
-                <div className="bg-slate-900/50 border border-slate-800 p-8 rounded-3xl backdrop-blur-sm shadow-2xl">
+                <div
+                    className="border p-8 rounded-3xl shadow-xl"
+                    style={{
+                        background: 'var(--bg-card)',
+                        borderColor: 'var(--border)',
+                    }}
+                >
                     {children}
                 </div>
             </div>
         </div>
-    );
-};
+    )
+}

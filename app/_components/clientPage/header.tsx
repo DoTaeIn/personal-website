@@ -1,53 +1,95 @@
 'use client'
 
-import Link from "next/link"; // Link 컴포넌트 사용
-import { Terminal, User as UserIcon, LogOut } from 'lucide-react';
-import { User } from '@supabase/supabase-js';
-import { createClient } from "@/app/_utils/supabase/client";
-import { useRouter } from "next/navigation";
-import React from "react";
+import Link from 'next/link'
+import { Terminal, User as UserIcon, LogOut } from 'lucide-react'
+import { User } from '@supabase/supabase-js'
+import { createClient } from '@/app/_utils/supabase/client'
+import { useRouter } from 'next/navigation'
+import { ThemeToggle } from '@/app/_components/ThemeToggle'
 
 export default function Header({ user }: { user: User | null }) {
-    const supabase = createClient();
-    const router = useRouter();
+    const supabase = createClient()
+    const router = useRouter()
 
     const handleLogout = async () => {
-        await supabase.auth.signOut();
-        router.refresh();
-    };
+        await supabase.auth.signOut()
+        router.refresh()
+    }
 
     return (
-        <nav className="fixed top-0 w-full z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800 py-4">
+        <nav
+            className="fixed top-0 w-full z-50 backdrop-blur-md border-b py-4"
+            style={{
+                background: 'color-mix(in srgb, var(--bg) 85%, transparent)',
+                borderColor: 'var(--border)',
+            }}
+        >
             <div className="max-w-5xl mx-auto px-6 flex justify-between items-center">
-                <Link href="/" className="font-bold text-xl text-cyan-400 flex items-center gap-2">
+                <Link
+                    href="/"
+                    className="font-bold text-xl flex items-center gap-2"
+                    style={{ color: 'var(--accent)' }}
+                >
                     <Terminal size={20} />
                     Jin.Dev
                 </Link>
 
-                <div className="flex items-center gap-6">
-                    {/* 메뉴 링크들 */}
-                    <div className="hidden md:flex gap-8 text-sm font-medium text-slate-400">
-                        <Link href="/#about" className="hover:text-cyan-400">소개</Link>
-                        <Link href="/#projects" className="hover:text-cyan-400">프로젝트</Link>
-                        <Link href="/#blog" className="hover:text-cyan-400">블로그</Link>
-                        <Link href="/#contact" className="hover:text-cyan-400">연락처</Link>
+                <div className="flex items-center gap-4">
+                    <div
+                        className="hidden md:flex gap-8 text-sm font-medium"
+                        style={{ color: 'var(--text-muted)' }}
+                    >
+                        {[
+                            { href: '/#about', label: '소개' },
+                            { href: '/#projects', label: '프로젝트' },
+                            { href: '/#blog', label: '블로그' },
+                            { href: '/#contact', label: '연락처' },
+                        ].map(({ href, label }) => (
+                            <Link
+                                key={href}
+                                href={href}
+                                className="transition-colors hover:text-[var(--accent)]"
+                                style={{ color: 'inherit' }}
+                            >
+                                {label}
+                            </Link>
+                        ))}
                     </div>
 
+                    <ThemeToggle />
+
                     {user ? (
-                        <div className="flex items-center gap-4">
-                            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-slate-300">
-                                <UserIcon size={14} />
-                                <span className="text-xs">{user?.user_metadata.full_name}</span>
+                        <div className="flex items-center gap-3">
+                            <div
+                                className="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs border"
+                                style={{
+                                    background: 'var(--bg-subtle)',
+                                    borderColor: 'var(--border)',
+                                    color: 'var(--text-muted)',
+                                }}
+                            >
+                                <UserIcon size={13} />
+                                {user.user_metadata.full_name}
                             </div>
-                            <button onClick={handleLogout} className="p-2 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-400/10 transition-all">
-                                <LogOut size={18} />
+                            <button
+                                onClick={handleLogout}
+                                className="p-2 rounded-lg transition-colors"
+                                style={{ color: 'var(--text-muted)' }}
+                                onMouseEnter={e => (e.currentTarget.style.color = '#ef4444')}
+                                onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
+                            >
+                                <LogOut size={16} />
                             </button>
                         </div>
                     ) : (
-                        // 로그인 페이지로 이동하는 링크
                         <Link
-                            href="/account/login" // 로그인 페이지가 있다면
-                            className="text-sm font-semibold px-4 py-2 rounded-lg bg-slate-900 border border-slate-800 hover:border-cyan-500/50 text-slate-300 hover:text-cyan-400 transition-all"
+                            href="/account/login"
+                            className="text-sm font-semibold px-4 py-2 rounded-lg border transition-all"
+                            style={{
+                                background: 'var(--bg-subtle)',
+                                borderColor: 'var(--border)',
+                                color: 'var(--text-muted)',
+                            }}
                         >
                             로그인
                         </Link>
@@ -55,5 +97,5 @@ export default function Header({ user }: { user: User | null }) {
                 </div>
             </div>
         </nav>
-    );
+    )
 }

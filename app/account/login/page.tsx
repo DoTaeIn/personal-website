@@ -119,14 +119,18 @@ export default function LoginPage() {
                         <button
                             type="button"
                             onClick={() => router.push('/account/reset-password')}
-                            className="text-xs text-cyan-500 hover:text-cyan-400 transition-colors"
+                            className="text-xs transition-colors"
+                            style={{ color: 'var(--accent)' }}
                         >
                             비밀번호를 잊으셨나요?
                         </button>
                     </div>
 
                     <button
-                        className="w-full py-3 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-xl transition-all shadow-lg shadow-cyan-900/20 flex justify-center items-center"
+                        className="w-full py-3 text-white font-bold rounded-xl transition-all flex justify-center items-center"
+                        style={{ background: 'var(--accent)' }}
+                        onMouseEnter={e => (e.currentTarget.style.background = 'var(--accent-hover)')}
+                        onMouseLeave={e => (e.currentTarget.style.background = 'var(--accent)')}
                         disabled={isLoading}
                     >
                         {isLoading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : "로그인"}
@@ -135,22 +139,27 @@ export default function LoginPage() {
 
                 <div className="mt-8">
                     <div className="relative flex items-center justify-center mb-6">
-                        <div className="border-t border-slate-800 w-full"></div>
-                        <span className="bg-slate-900 px-4 text-xs text-slate-500 absolute">또는 소셜 계정으로 로그인</span>
+                        <div className="w-full border-t" style={{ borderColor: 'var(--border)' }}></div>
+                        <span className="px-4 text-xs absolute" style={{ background: 'var(--bg-card)', color: 'var(--text-muted)' }}>또는 소셜 계정으로 로그인</span>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
-                        <button className="flex items-center justify-center gap-2 py-2.5 border border-slate-800 rounded-xl hover:bg-slate-800 transition-colors text-sm font-medium text-slate-300">
-                            <GithubIcon size={18} /> GitHub
-                        </button>
-                        <button className="flex items-center justify-center gap-2 py-2.5 border border-slate-800 rounded-xl hover:bg-slate-800 transition-colors text-sm font-medium text-slate-300">
-                            <Chrome size={18} /> Google
-                        </button>
+                        {[{ icon: GithubIcon, label: 'GitHub' }, { icon: Chrome, label: 'Google' }].map(({ icon: Icon, label }) => (
+                            <button
+                                key={label}
+                                className="flex items-center justify-center gap-2 py-2.5 rounded-xl border text-sm font-medium transition-all"
+                                style={{ borderColor: 'var(--border)', color: 'var(--text-muted)', background: 'var(--bg-subtle)' }}
+                                onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.color = 'var(--accent)' }}
+                                onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.color = 'var(--text-muted)' }}
+                            >
+                                <Icon size={17} /> {label}
+                            </button>
+                        ))}
                     </div>
                 </div>
 
-                <p className="mt-8 text-center text-sm text-slate-500">
-                    계정이 없으신가요? {" "}
-                    <button onClick={() => router.push("/register")} className="text-cyan-500 hover:underline font-medium">회원가입</button>
+                <p className="mt-8 text-center text-sm" style={{ color: 'var(--text-muted)' }}>
+                    계정이 없으신가요?{' '}
+                    <button onClick={() => router.push('/register')} className="font-medium hover:underline" style={{ color: 'var(--accent)' }}>회원가입</button>
                 </p>
             </AuthLayout>
 
