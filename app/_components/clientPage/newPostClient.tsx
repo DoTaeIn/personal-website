@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
@@ -197,11 +197,45 @@ export default function BlogEditorPage({ categories: initialCategories }: BlogEd
         editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run()
     }, [editor])
 
+    const imageInputRef = useRef<HTMLInputElement>(null)
+    const [isUploading, setIsUploading] = useState(false)
+
     const addImage = useCallback(() => {
-        if (!editor) return
-        const url = window.prompt('이미지 URL을 입력하세요')
-        if (url) editor.chain().focus().setImage({ src: url }).run()
-    }, [editor])
+        imageInputRef.current?.click()
+    }, [])
+
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0]
+        if (!file || !editor) return
+
+        setIsUploading(true)
+        try {
+            const ext = file.name.split('.').pop()
+            const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
+
+            const { data, error } = await supabase.storage
+                .from('post-images')
+                .upload(filename, file, { cacheControl: '3600', upsert: false })
+
+            if (error) throw error
+
+            const { data: { publicUrl } } = supabase.storage
+                .from('post-images')
+                .getPublicUrl(data.path)
+
+            editor.chain().focus().setImage({ src: publicUrl }).run()
+        } catch (err) {
+            console.error('Image upload failed:', err)
+            setModalConfig({
+                isOpen: true, type: 'alert', title: '업로드 실패',
+                message: '이미지 업로드에 실패했습니다.',
+                onConfirm: closeModal,
+            })
+        } finally {
+            setIsUploading(false)
+            e.target.value = ''
+        }
+    }
 
     const toggleHeading = (level: Level) => {
         if (!editor) return
@@ -471,7 +505,7 @@ export default function BlogEditorPage({ categories: initialCategories }: BlogEd
                             <ToolbarBtn onClick={() => editor.chain().focus().toggleCode().run()} active={editor.isActive('code')} icon={<Code size={17} />} tooltip="인라인 코드" />
                             <ToolbarBtn onClick={() => editor.chain().focus().toggleCodeBlock().run()} active={editor.isActive('codeBlock')} icon={<Terminal size={17} />} tooltip="코드 블럭" />
                             <ToolbarBtn onClick={setLink} active={editor.isActive('link')} icon={<LinkIcon size={17} />} tooltip="링크" />
-                            <ToolbarBtn onClick={addImage} icon={<ImageIcon size={17} />} tooltip="이미지" />
+                            <ToolbarBtn onClick={addImage} disabled={isUploading} icon={<ImageIcon size={17} />} tooltip="이미지 업로드" />
                             <ToolbarBtn onClick={() => editor.chain().focus().setHorizontalRule().run()} icon={<Minus size={17} />} tooltip="구분선" />
                         </div>
                         <div className="flex-1" />
@@ -482,7 +516,32 @@ export default function BlogEditorPage({ categories: initialCategories }: BlogEd
                     </div>
                 )}
 
-                {/* ── Editor / Preview ── */}
+                {/* Hidden image file input */}
+            <input
+                ref={imageInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleImageUpload}
+            />
+
+            {/* Upload overlay */}
+            {isUploading && (
+                <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/40 backdrop-blur-sm">
+                    <div
+                        className="flex items-center gap-3 px-6 py-4 rounded-2xl border shadow-xl"
+                        style={{ background: 'var(--bg-card)', borderColor: 'var(--border)' }}
+                    >
+                        <div
+                            className="w-5 h-5 rounded-full border-2 border-t-transparent animate-spin"
+                            style={{ borderColor: 'var(--accent)', borderTopColor: 'transparent' }}
+                        />
+                        <span className="text-sm font-medium">이미지 업로드 중...</span>
+                    </div>
+                </div>
+            )}
+
+            {/* ── Editor / Preview ── */}
                 <div className="flex-1 min-h-[500px] pb-20">
                     {isPreview ? (
                         <div
