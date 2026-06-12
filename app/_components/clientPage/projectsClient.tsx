@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from 'react'
 import Link from 'next/link'
-import { Cpu, Gamepad2, Server, Terminal, ExternalLink, Github, Mail, Linkedin, Smartphone, Globe } from 'lucide-react'
+import { Cpu, Gamepad2, Server, Terminal, ExternalLink, Github, Mail, Linkedin, Smartphone, Globe, Plus } from 'lucide-react'
 import { Database } from '@/types/supabase'
 import { FadeIn } from '@/app/_components/FadeIn'
 
@@ -64,6 +64,17 @@ export default function Projects({ projects }: { projects: Project[] }) {
                         <br />
                         저의 대표 프로젝트들을 소개합니다.
                     </p>
+
+                    <Link
+                        href="/projects/new"
+                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white mt-2 w-fit transition-all"
+                        style={{ background: 'var(--accent)' }}
+                        onMouseEnter={e => (e.currentTarget.style.background = 'var(--accent-hover)')}
+                        onMouseLeave={e => (e.currentTarget.style.background = 'var(--accent)')}
+                    >
+                        <Plus size={16} />
+                        새 프로젝트 추가
+                    </Link>
                 </FadeIn>
             </header>
 
