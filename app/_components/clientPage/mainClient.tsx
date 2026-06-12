@@ -172,8 +172,9 @@ export default function Main({ projects, posts }: { projects: Project[]; posts: 
 
                         return (
                             <FadeIn key={idx} delay={idx * 80}>
+                                <Link href={`/projects/${project.slug}`} className="group block h-full">
                                 <div
-                                    className="group relative p-6 rounded-2xl border transition-all duration-300 hover:-translate-y-1 h-full flex flex-col"
+                                    className="relative p-6 rounded-2xl border transition-all duration-300 hover:-translate-y-1 h-full flex flex-col"
                                     style={{
                                         background: 'var(--bg-card)',
                                         borderColor: 'var(--border)',
@@ -214,6 +215,7 @@ export default function Main({ projects, posts }: { projects: Project[]; posts: 
                                         ))}
                                     </div>
                                 </div>
+                                </Link>
                             </FadeIn>
                         )
                     })}
@@ -259,14 +261,15 @@ export default function Main({ projects, posts }: { projects: Project[]; posts: 
                     <div className="space-y-2">
                         {posts.map((post, idx) => (
                             <FadeIn key={idx} delay={idx * 60}>
-                                <div
-                                    className="group cursor-pointer p-6 -mx-2 rounded-2xl transition-colors"
+                                <Link
+                                    href={`/posts/${post.id}`}
+                                    className="group block p-6 -mx-2 rounded-2xl transition-colors"
                                     style={{ background: 'transparent' }}
                                     onMouseEnter={e => {
-                                        (e.currentTarget as HTMLDivElement).style.background = 'var(--bg-card)'
+                                        (e.currentTarget as HTMLAnchorElement).style.background = 'var(--bg-card)'
                                     }}
                                     onMouseLeave={e => {
-                                        (e.currentTarget as HTMLDivElement).style.background = 'transparent'
+                                        (e.currentTarget as HTMLAnchorElement).style.background = 'transparent'
                                     }}
                                 >
                                     <div className="flex items-center gap-3 mb-2 text-xs font-medium">
@@ -277,17 +280,15 @@ export default function Main({ projects, posts }: { projects: Project[]; posts: 
                                         </span>
                                     </div>
                                     <h3
-                                        className="text-xl font-bold mb-2 transition-colors"
+                                        className="text-xl font-bold mb-2 transition-colors group-hover:text-[var(--accent)]"
                                         style={{ color: 'var(--text)' }}
-                                        onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
-                                        onMouseLeave={e => (e.currentTarget.style.color = 'var(--text)')}
                                     >
                                         {post.title}
                                     </h3>
                                     <p className="text-sm leading-relaxed" style={{ color: 'var(--text-muted)' }}>
                                         {post.description}
                                     </p>
-                                </div>
+                                </Link>
                             </FadeIn>
                         ))}
                     </div>

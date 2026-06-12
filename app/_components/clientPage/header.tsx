@@ -41,8 +41,8 @@ export default function Header({ user }: { user: User | null }) {
                     >
                         {[
                             { href: '/#about', label: '소개' },
-                            { href: '/#projects', label: '프로젝트' },
-                            { href: '/#blog', label: '블로그' },
+                            { href: '/projects', label: '프로젝트' },
+                            { href: '/posts', label: '블로그' },
                             { href: '/#contact', label: '연락처' },
                         ].map(({ href, label }) => (
                             <Link
