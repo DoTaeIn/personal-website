@@ -9,7 +9,7 @@ export default async function WritePage() {
     // 1. 유저 인증 확인 (로그인 안했으면 튕겨냄)
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     if (authError || !user) {
-        redirect('/login');
+        redirect('/account/login');
     }
 
     // 2. 카테고리 데이터 가져오기 (Server-side fetching)
